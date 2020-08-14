@@ -10,10 +10,10 @@ world = World()
 
 
 # You may uncomment the smaller graphs for development and testing purposes.
-# map_file = "maps/test_line.txt"
+# map_file =  "projects\adventure\maps\test_line.txt"  #"maps/test_line.txt" 
 # map_file = "maps/test_cross.txt"
 # map_file = "maps/test_loop.txt"
-# map_file = "maps/test_loop_fork.txt"
+# map_file = "maps/test_loop_fork.txt" 
 map_file = "maps/main_maze.txt"
 
 # Loads the map into a dictionary
@@ -29,7 +29,37 @@ player = Player(world.starting_room)
 # traversal_path = ['n', 'n']
 traversal_path = []
 
+# Start tansverse test code
+opposite = {'n': 's', 's': 'n', 'e':'w', 'w': 'e'}
 
+
+def traverse(room, visited = None):
+    if visited is None:
+        visited = set()
+
+    # create a path list
+    path = []
+    room = player.current_room
+
+    # Go through possible directions
+    for direction in room.get_exits():
+        player.travel(direction)
+        room = player.current_room
+
+        # if room is visited
+        if room in visited:
+            player.travel(opposite[direction])
+            # else add room to visited and direction to path
+        else:
+            visited.add(room)
+            path.append(direction)
+            #recursivly call function again on this room and add to path
+            path += traverse(room, visited)
+            player.travel(opposite[direction])
+            path.append(opposite[direction])
+    return path
+                
+traversal_path = traverse(player.current_room)
 
 # TRAVERSAL TEST
 visited_rooms = set()
@@ -51,12 +81,12 @@ else:
 #######
 # UNCOMMENT TO WALK AROUND
 #######
-player.current_room.print_room_description(player)
-while True:
-    cmds = input("-> ").lower().split(" ")
-    if cmds[0] in ["n", "s", "e", "w"]:
-        player.travel(cmds[0], True)
-    elif cmds[0] == "q":
-        break
-    else:
-        print("I did not understand that command.")
+# player.current_room.print_room_description(player)
+# while True:
+#     cmds = input("-> ").lower().split(" ")
+#     if cmds[0] in ["n", "s", "e", "w"]:
+#         player.travel(cmds[0], True)
+#     elif cmds[0] == "q":
+#         break
+#     else:
+#         print("I did not understand that command.")
